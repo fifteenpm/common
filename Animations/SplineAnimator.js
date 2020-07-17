@@ -4,7 +4,6 @@ import { useFrame } from 'react-three-fiber';
 import { useKeyPress } from '../Utils/hooks';
 
 export function useObjectAlongTubeGeometry({ object, tubeGeometry, ...props }) {
-    console.log('object', object)
     const [normal, binormal] = useMemo(() => {
         return [
             new THREE.Vector3(),
@@ -47,7 +46,10 @@ export function useObjectAlongTubeGeometry({ object, tubeGeometry, ...props }) {
         lookAt.copy(pos).add(dir);
         object.matrix.lookAt(object.position, lookAt, normal);
         object.rotation.setFromRotationMatrix(object.matrix);
-        // car.rotation.z += Math.PI / 12; // TODO added code - can it be baked into matrix rotation?
+        // if (rotateOnZ) {
+            // object.rotation.z += Math.PI / 12; // TODO added code - can it be baked into matrix rotation?
+        // }
+
     }
     const updateSpeed = () => {
         if (accelerationPressed) {
