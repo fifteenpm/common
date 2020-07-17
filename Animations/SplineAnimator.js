@@ -18,7 +18,11 @@ export function useObjectAlongTubeGeometry({ object, tubeGeometry, ...props }) {
     const slowDownPressed = useKeyPress('ArrowDown');
     const arrowLeftPressed = useKeyPress('ArrowLeft');
     const arrowRightPressed = useKeyPress('ArrowRight');
-
+    useEffect(() => {
+        if (!speed.current) speed.current = props.speed ? props.speed : 20;
+        if (!delta.current) delta.current = props.delta ? props.speed : .005;
+        if (!offset.current) offset.current = props.offset ? props.offset : 0;
+    })
     function getCurTrajectory() {
         const t = (offset.current % speed.current) / speed.current;
         const pos = tubeGeometry.parameters.path.getPointAt(t);
@@ -37,7 +41,6 @@ export function useObjectAlongTubeGeometry({ object, tubeGeometry, ...props }) {
         return [pos, dir, t];
     }
     function updateCurTrajectory({ t, pos, dir }) {
-        console.warn("object undefined")
         if (!object) return;
         object.position.copy(pos);
         // Using arclength for stablization in look ahead.
@@ -47,7 +50,7 @@ export function useObjectAlongTubeGeometry({ object, tubeGeometry, ...props }) {
         object.matrix.lookAt(object.position, lookAt, normal);
         object.rotation.setFromRotationMatrix(object.matrix);
         // if (rotateOnZ) {
-            // object.rotation.z += Math.PI / 12; // TODO added code - can it be baked into matrix rotation?
+            object.rotation.z += Math.PI / 2; // TODO added code - can it be baked into matrix rotation?
         // }
 
     }
@@ -68,12 +71,6 @@ export function useObjectAlongTubeGeometry({ object, tubeGeometry, ...props }) {
 
         }
     }
-
-    useEffect(() => {
-        if (!speed.current) speed.current = props.speed ? props.speed : 20;
-        if (!delta.current) delta.current = props.delta ? props.speed : .005;
-        if (!offset.current) offset.current = props.offset ? props.offset : 0;
-    })
     // TODO http://jsfiddle.net/krw8nwLn/66/
     useFrame(() => {
         // updateSpeed();
