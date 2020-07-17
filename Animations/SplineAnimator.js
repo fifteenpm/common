@@ -49,9 +49,9 @@ export function useObjectAlongTubeGeometry({ object, tubeGeometry, ...props }) {
         lookAt.copy(pos).add(dir);
         object.matrix.lookAt(object.position, lookAt, normal);
         object.rotation.setFromRotationMatrix(object.matrix);
-        // if (rotateOnZ) {
+        if (!props.flipOnZ){
             object.rotation.z += Math.PI / 2; // TODO added code - can it be baked into matrix rotation?
-        // }
+        }
 
     }
     const updateSpeed = () => {
