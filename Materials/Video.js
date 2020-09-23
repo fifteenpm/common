@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { createVideoTexture } from '../Video/Video';
 
 export default function Video({ materialRef, src, play, ...props }) {
@@ -11,6 +11,11 @@ export default function Video({ materialRef, src, play, ...props }) {
     }
 
     const videoTexture = useMemo(() => { return createVideoTexture({ src, play }) })
+
+    useEffect(() => {
+        if (!materialRef.current) return;
+        console.log("ratio", materialRef.current, materialRef.current.map.image.videoWidth, materialRef.current.map.image.videoHeight)
+    }, [materialRef])
 
     return <meshBasicMaterial
         ref={materialRef}

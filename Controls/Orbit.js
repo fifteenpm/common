@@ -7,6 +7,7 @@ extend({ OrbitControls, FlyControls });
 
 
 export default function Orbit({ curCamera, passthroughRef, ...props }) {
+    console.log("INCOMING CUR CAMREA IS:", curCamera    )
     curCamera = curCamera || useThree().camera;
     const controls = passthroughRef ? passthroughRef : useRef();
     const { gl } = useThree();
