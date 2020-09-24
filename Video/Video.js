@@ -1,6 +1,9 @@
 import React, { useMemo, useRef, useResource } from "react";
 import * as THREE from "three";
 
+
+// TODO (jeremy) useVideoTexture so that play can be set in a different
+// component more easily...
 export function createVideoTexture({src, play}) {
   const video = document.createElement("video");
   document.body.appendChild(video);

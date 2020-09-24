@@ -3,7 +3,8 @@ import * as THREE from 'three';
 import { useFrame, useThree } from 'react-three-fiber';
 import explosion from "../assets/textures/explosion/explosion.png";
 import vertex from '!raw-loader!glslify-loader!../Shaders/noiseVertex.glsl';
-import fragment from '!raw-loader!glslify-loader!../Shaders/noiseFragment.glsl';
+// import fragment from '!raw-loader!glslify-loader!../Shaders/noiseFragment.glsl';
+import fragment from '!raw-loader!glslify-loader!../Shaders/simpleSamplerFragmentWithOffset.glsl';
 
 
 // source: https://www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js/
@@ -15,7 +16,7 @@ export default function Noise({ materialRef, ...props }) {
 	const uniforms = useRef();
 	const pickMap = () => {
 		const textureLoader = new THREE.TextureLoader();
-		if (props.shaderMap) return props.shaderMap
+		if (props.map) return props.map
 		if (props.imagePath) return textureLoader.load(props.imagePath)
 		return textureLoader.load(explosion)
 	}
@@ -28,15 +29,14 @@ export default function Noise({ materialRef, ...props }) {
     // })
 
 	useEffect(() => {
-		const texMap = pickMap()
-		const offset = props.offset ? props.offset : {x: 0, y: 0}
-		console.log("OFFSET", offset)
+		// const texMap = pickMap()
+		// const offset = props.offset ? props.offset : {x: 0, y: 0}
 		uniforms.current = {
 			offset: {
-				value: offset,
+				value: props.offset ? props.offset : {x: 0, y: 0},
 			},
-			map: {
-				value: texMap,
+			samplerMap: {
+				value: pickMap(),
 			},
 			time: {
 				value: 0.0,
