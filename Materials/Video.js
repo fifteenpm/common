@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect } from 'react';
-import { createVideoTexture } from '../Video/Video';
+import { useVideoTexture } from '../Video/hooks';
 
 
 export default function Video({ materialRef, src, play, ...props }) {
@@ -11,11 +11,11 @@ export default function Video({ materialRef, src, play, ...props }) {
         console.error("play is a required prop for Video texture.")
     }
 
-    const videoTexture = useMemo(() => { return createVideoTexture({ src, play }) })
+    const { texture } = useVideoTexture({ src, play })
 
     return <meshBasicMaterial
         ref={materialRef}
-        map={videoTexture}
+        map={texture}
         {...props}
     />
 }
