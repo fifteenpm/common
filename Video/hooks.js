@@ -34,8 +34,26 @@ export function useVideoTexture({ src, play }) {
         const video = document.createElement("video");
         document.body.appendChild(video);
         video.src = src;
-        const player = videojs(video)
-        player.src(src)
+        // video.type = "video/mp4"
+        // const player = videojs(video)
+        videojs.Hls.MAX_GOAL_BUFFER_LENGTH = 30;
+        var player = window.player = videojs(video, {
+            html5: {
+                hls: {
+                    overrideNative: true
+                },
+                nativeAudioTracks: false,
+                nativeVideoTracks: false,
+                
+            }
+        });
+        
+        player.src({
+            type: 'application/x-mpegURL',
+            src: video.src,
+        });
+        
+        // player.src(src)
         return [video, player]
     }, [src])
 
