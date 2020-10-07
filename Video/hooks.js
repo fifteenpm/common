@@ -27,32 +27,39 @@ import videojs from 'video.js'
 
 // TODO (jeremy) useVideoTexture so that play can be set in a different
 // component more easily...
-export function useVideoTexture({ src, play }) {
+export function useVideoTexture({ src, play, loopPlayer = true }) {
 
     const [video, player] = useMemo(() => {
         if (!src) return;
         const video = document.createElement("video");
+        console.log("ADDING VID TO DOM")
         document.body.appendChild(video);
         video.src = src;
         // video.type = "video/mp4"
         // const player = videojs(video)
-        videojs.Hls.MAX_GOAL_BUFFER_LENGTH = 30;
-        var player = window.player = videojs(video, {
+        // videojs.Hls.MAX_GOAL_BUFFER_LENGTH = 30;
+        const player = window.player = videojs(video, {
             html5: {
                 hls: {
-                    overrideNative: true
+                    overrideNative: true,
                 },
                 nativeAudioTracks: false,
                 nativeVideoTracks: false,
-                
+                useDevicePixelRatio: true,
+
             }
+        }, function () {
+            console.log("THIS IN CALBACK", this)
+            this.off('click');
         });
-        
+
         player.src({
             type: 'application/x-mpegURL',
             src: video.src,
         });
-        
+
+        player.loop(loopPlayer)
+
         // player.src(src)
         return [video, player]
     }, [src])
@@ -61,8 +68,8 @@ export function useVideoTexture({ src, play }) {
 
     useEffect(() => {
         if (play) {
-            console.log("PLAY player:", player)
-            // video.play();
+            // video.play( 
+            console.log(player)
             player.play()
         }
     }, [play])
