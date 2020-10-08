@@ -1,44 +1,30 @@
-// export function useVideoMediaStream({ }) {
-//     // https://gist.github.com/askilondz/d618fb2e39f481fd19bf3f8b0476a3b6
-//     var mediaSource = new MediaSource();
-//     video.src = window.URL.createObjectURL(mediaSource);
-//     mediaSource.addEventListener('sourceopen', function () {
-//         var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vorbis,vp8"');
-//         // Get video segments and append them to sourceBuffer.
-//         reader.onload = function (e) {
-//             sourceBuffer.appendBuffer(new Uint8Array(e.target.result));
-//             if (i === NUM_CHUNKS - 1) {
-//                 mediaSource.endOfStream();
-//             } else {
-//                 if (video.paused) {
-//                     // start playing after first chunk is appended
-//                     video.play();
-//                 }
-//                 readChunk(++i);
-//             }
-//         };
-//     })
-// }
-
-import React, { useMemo, useRef, useEffect, useResource } from "react";
+import { useEffect, useState } from "react";
 import * as THREE from "three";
-import videojs from 'video.js'
+import videojs from 'video.js';
 
-
-// TODO (jeremy) useVideoTexture so that play can be set in a different
-// component more easily...
-export function useVideoTexture({ src, play, loopPlayer = true }) {
-
-    const [video, player] = useMemo(() => {
-        if (!src) return;
-        const video = document.createElement("video");
-        console.log("ADDING VID TO DOM")
-        document.body.appendChild(video);
-        video.src = src;
-        // video.type = "video/mp4"
-        // const player = videojs(video)
-        // videojs.Hls.MAX_GOAL_BUFFER_LENGTH = 30;
-        const player = window.player = videojs(video, {
+export function useVideoTexture({
+    sources,
+    canPlay = false,
+    loopPlayer = true,
+    videoElement = "video",
+}) {
+    const [video, setVideo] = useState();
+    const [player, setPlayer] = useState();
+    const [texture, setTexture] = useState();
+    useEffect(() => {
+        if (!sources) return;
+        const _video = document.createElement(videoElement);
+        document.body.appendChild(_video);
+        // video.src = src;
+        // video.addEventListener('canplaythrough',ready);
+        const _player = window.player = videojs(_video, {
+            autoplay: true,//false, //true,
+            // preload: false,//"auto",
+            // fluid: "true",
+            muted: true,
+            controls: true,
+            playsinline: true,
+            sources: sources,
             html5: {
                 hls: {
                     overrideNative: true,
@@ -46,38 +32,70 @@ export function useVideoTexture({ src, play, loopPlayer = true }) {
                 nativeAudioTracks: false,
                 nativeVideoTracks: false,
                 useDevicePixelRatio: true,
+            },
+            // vhs: {
+            //     playsinline: true,
+            // }
 
-            }
         }, function () {
-            console.log("THIS IN CALBACK", this)
-            this.off('click');
+            // console.log("THIS IN CALBACK", this)
+
+            // this.off('click');
         });
-
-        player.src({
-            type: 'application/x-mpegURL',
-            src: video.src,
-        });
-
-        player.loop(loopPlayer)
-
-        // player.src(src)
-        return [video, player]
-    }, [src])
-
+        // player.playsinline(true)
+        // player.src({
+        //     type: 'application/x-mpegURL',
+        //     src: src,
+        // });
+        _player.loop(loopPlayer)
+        setPlayer(_player)
+        setVideo(_video)
+    }, [sources])
 
 
     useEffect(() => {
-        if (play) {
-            // video.play( 
-            console.log(player)
-            player.play()
-        }
-    }, [play])
+        if (player && canPlay) {
+            const promise = player.play()
+            console.log("RETURN TRUE!!!", promise)
+            // player.bigPlayButton.show()
+            // var promise = document.querySelector(videoElement).play()
+            // if (promise !== undefined) {
+            //     promise.catch(error => {
+            //         //         // Auto-play was prevented
+            //         //         // Show a UI element to let the user manually start playback
+            //         //         // console.log("UHM HERE WE ARE?")
+            //         console.error("Caught error trying to start video play:", error)
+            //         //         player.bigPlayButton.show();
+            //         //         // alert('blah')
+            //     }).then(() => {
+            //         console.log("IN THEN OF PROMISE!", promise.state, promise)
 
-    // create material from video texture
-    let texture = new THREE.VideoTexture(video);
-    texture.minFilter = THREE.LinearFilter;
-    texture.format = THREE.RGBFormat;
+            //         // if (promise.state != "fulfilled") {
+            //         setTimeout(() => {
+            //             console.log("tryin to restart the player")
+            //             // player.pause()
+            //             player.play()
+            //         }, 3000)
+            //     })
+                //             // Auto-play started
+                //             player.bigPlayButton.show()i
+                //             console.log("Now it should play?", player, video)
+
+            // }
+        }
+
+    }, [player, canPlay])
+
+
+    useEffect(() => {
+        if (!video) return
+        // create material from video texture
+        let tex = new THREE.VideoTexture(video);
+        tex.minFilter = THREE.LinearFilter;
+        tex.format = THREE.RGBFormat;
+        setTexture(tex)
+    }, [video])
+
     return {
         texture,
     }

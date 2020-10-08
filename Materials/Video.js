@@ -1,17 +1,23 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useVideoTexture } from '../Video/hooks';
 
 
-export default function Video({ materialRef, src, play, ...props }) {
+export default function Video({ materialRef, sources, canPlay, ...props }) {
 
-    if (!src) {
-        console.error("src a required prop for Video texture.")
+    if (!sources) {
+        console.error("sources a required prop for Video texture.")
     }
-    if (play === undefined) {
+    if (canPlay === undefined) {
         console.error("play is a required prop for Video texture.")
     }
 
-    const { texture } = useVideoTexture({ src, play })
+    const { texture } = useVideoTexture({ sources, canPlay })
+
+    useEffect(() => {
+        if (texture) {
+            materialRef.current.map = texture;
+        }
+    }, [texture])
 
     return <meshBasicMaterial
         ref={materialRef}
