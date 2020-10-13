@@ -2,16 +2,9 @@ import React, { useEffect } from 'react';
 import { useVideoTexture } from '../Video/hooks';
 
 
-export default function Video({ materialRef, sources, canPlay, ...props }) {
+export default function Video({ materialRef, sources, shouldPlayVideo, ...props }) {
 
-    if (!sources) {
-        console.error("sources a required prop for Video texture.")
-    }
-    if (canPlay === undefined) {
-        console.error("play is a required prop for Video texture.")
-    }
-
-    const { texture } = useVideoTexture({ sources, canPlay })
+    const { texture } = useVideoTexture({ sources, shouldPlayVideo })
 
     useEffect(() => {
         if (texture) {

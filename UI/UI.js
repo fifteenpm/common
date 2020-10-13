@@ -30,7 +30,7 @@ export default function UI({
     const [firstTrackTriggered, setFirstTrackTriggered] = useState(false);
     const hasTracks = useMemo(() => content.tracks ? true : false);
     // make playTrack available for pages with tracks
-    const { playTrack } = hasTracks && usePlayer(content.tracks[0].mediaType);
+    // const { playTrack } = hasTracks && usePlayer(content.tracks[0].mediaType);
 
     useEffect(() => {
         if (!overlay && !overlayHasBeenClosed) {
@@ -71,14 +71,14 @@ export default function UI({
                 onToggle={(e) => {
                     e.preventDefault();
                     toggleOverlay(!overlay);
-                    if (!firstTrackTriggered && hasTracks) {
-                        playTrack(0);
-                        setFirstTrackTriggered(true);
-                    }
+                    // if (!firstTrackTriggered && hasTracks) {
+                    //     playTrack(0);
+                    //     setFirstTrackTriggered(true);
+                    // }
                 }}
             />}
             <div className="footer">
-                {player && <Player
+                {/* {player && <Player
                     artist={content.artist}
                     playerColor={content.colors.player}
                     selectedColor={content.colors.onHover}
@@ -92,7 +92,7 @@ export default function UI({
                         e.preventDefault();
                         toggleOverlay(!overlay);
                     }}
-                />}
+                />} */}
             </div>
         </>
     );
