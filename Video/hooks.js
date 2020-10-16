@@ -165,7 +165,7 @@ export function useVideoTexture({
 
         tex.minFilter = THREE.LinearFilter;
         tex.format = THREE.RGBFormat;
-        tex.flipY = false;
+        // tex.flipY = false;
         setTexture(tex)
     }, [video])
 

@@ -14,7 +14,7 @@ export default function VideoShader({ materialRef, sources, shouldPlayVideo, ...
             console.log("SETTING TEXTURE", texture)
             uniforms.current = {
                 samplerMap: { value: texture },
-                isIOS: { value: isIOS }
+                // isIOS: { value: isIOS }
             }
         }
     }, [texture])
