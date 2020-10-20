@@ -11,9 +11,9 @@ const useVideoPlayer = () => {
       togglePlay();
     } else {
       state.videoElement.pause();
-      state.videoElement.addEventListener("onloadedmetadata", () => {
-        state.videoElement.play();
-      });
+      // state.videoElement.addEventListener("canplay", () => {
+      //   state.videoElement.play();
+      // });
       state.videoElement.play();
       setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
     }

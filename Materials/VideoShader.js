@@ -6,9 +6,9 @@ import { useVideoTexture } from '../Video/hooks';
 import { isIOS } from '../Utils/BrowserDetection';
 import useVideoPlayer from '../UI/Player/hooks/useVideoPlayer';
 
-export default function VideoShader({ materialRef, sources, shouldPlayVideo, ...props }) {
+export default function VideoShader({ materialRef, videoTexture, sources, shouldPlayVideo, ...props }) {
     // const {videoTexture} = useVideoPlayer()
-    const { videoTexture } = useVideoTexture({ sources, shouldPlayVideo })
+    // const { videoTexture } = useVideoTexture({ sources, shouldPlayVideo })
     const uniforms = useRef()
 
     useEffect(() => {

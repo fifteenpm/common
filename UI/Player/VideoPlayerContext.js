@@ -14,8 +14,9 @@ const useVideoTexture = ({ videoElement }) => {
 
 }
 
-const useVideoElement = ({ sources, loop = true, muted = true, volume = 1, playbackRate = 1.0, ...props }) => {
-  const videoElement = useMemo(() => {
+const useVideo = ({ sources, loop = true, muted = true, volume = 1, playbackRate = 1.0, ...props }) => {
+  const [videoTexture, videoElement] = useMemo(() => {
+
     const element = document.createElement("video")
     element.codecs = "avc1.4D401E, mp4a.40.2";
     element.playsInline = true;
@@ -34,20 +35,55 @@ const useVideoElement = ({ sources, loop = true, muted = true, volume = 1, playb
       element.appendChild(src);
     }
     document.body.appendChild(element);
-    return element;
+    let tex = new THREE.VideoTexture(element);
+    tex.minFilter = THREE.LinearFilter;
+    tex.format = THREE.RGBFormat;
+    return [tex, element];
   });
 
+
+
   return {
+    videoTexture,
     videoElement
   }
 }
 
 const VideoPlayerContext = React.createContext([{}, () => { }]);
 
-const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, ...props }) => {
+const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, loop = true, muted = false, volume = 1, playbackRate = 1.0, ...props }) => {
 
-  const { videoElement } = useVideoElement({ sources: tracks[curIdx].sources })
-  const { videoTexture } = useVideoTexture({ videoElement });
+  // const { videoElement, videoTexture } = useVideo({ sources: tracks[curIdx].sources })
+  // const { videoTexture } = useVideoTexture({ videoElement });
+  const [videoTexture, videoElement] = useMemo(() => {
+
+    const element = document.createElement("video")
+    element.codecs = "avc1.4D401E, mp4a.40.2";
+    element.playsInline = true;
+    element.post = "https://dummyimage.com/320x240/ffffff/fff";
+    element.crossOrigin = 'anonymous';
+    element.loop = loop;
+    element.muted = muted;
+    element.volume = volume;
+    element.playbackRate = playbackRate;
+
+    // todo temp
+    const sources = tracks[curIdx].sources;
+    for (let i = 0; i < sources.length; i++) {
+      /* First source element creation */
+      let src = document.createElement("source");
+      // Attribute settings for my first source
+      src.setAttribute("src", sources[i].src);
+      src.setAttribute("type", sources[i].type);
+      element.appendChild(src);
+    }
+    document.body.appendChild(element);
+    let tex = new THREE.VideoTexture(element);
+    tex.minFilter = THREE.LinearFilter;
+    tex.format = THREE.RGBFormat;
+    return [tex, element];
+  });
+
 
   const [state, setState] = useState({
     videoElement: videoElement,
