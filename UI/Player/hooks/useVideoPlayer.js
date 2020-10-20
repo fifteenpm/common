@@ -10,30 +10,21 @@ const useVideoPlayer = () => {
     if (index === state.currentTrackIndex && state.videoPlayer.media) {
       togglePlay();
     } else {
-      state.videoPlayer.pause();
-      
-      
-      
-      console.log("LOADING VIDEO MESH:", state.videoMesh)
-      state.videoPlayer.media = state.videoMesh.userData.media;
-      // state.videoPlayer.media.visible = false;
-      state.videoPlayer.media.addEventListener("canplay", () => {
-        // state.videoPlayer.media.playsinline = true;
-        state.videoPlayer.media.play();
+      state.videoElement.pause();
+      state.videoElement.addEventListener("canplay", () => {
+        state.videoElement.play();
       });
-
-
-      state.videoPlayer.play();
+      state.videoElement.play();
       setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
     }
   }
 
   function togglePlay() {
     if (state.isPlaying) {
-      state.videoPlayer.media.pause();
+      state.videoElement.pause();
     } else {
-      state.videoPlayer.media.visible = true;
-      state.videoPlayer.media.play();
+      state.videoElement.visible = true;
+      state.videoElement.play();
     }
     setState(state => ({ ...state, isPlaying: !state.isPlaying }));
   }
@@ -49,7 +40,7 @@ const useVideoPlayer = () => {
   }
 
   return {
-    videoPlayer: state.videoPlayer,
+    videoElement: state.videoElement,
     playTrack,
     togglePlay,
     currentTrackName: state.currentTrackIndex !== null && state.tracks[state.currentTrackIndex].name,
@@ -58,9 +49,9 @@ const useVideoPlayer = () => {
     isPlaying: state.isPlaying,
     playPreviousTrack,
     playNextTrack,
-    currentTime: state.videoPlayer.currentTime,
+    currentTime: state.videoElement.currentTime,
     bpm: state.currentTrackIndex !== null && state.tracks[state.currentTrackIndex].bpm,
-    videoMesh: state.videoMesh,
+    videoTexture: state.videoTexture,
   }
 };
 

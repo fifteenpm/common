@@ -10,12 +10,11 @@ const rotateObject = (object, rotateX = 0, rotateY = 0, rotateZ = 0) => {
   object.rotateY(rotateY);
   object.rotateZ(rotateZ);
 }
-const loadVideoMesh = ({
-  //  initialize an object of type 'video'
-  videoElement, geometry, url, name, position, loop,
-    muted, mimetype, invert, volume, sources,
-    computeBoundingSphere, playbackRate,
-    rotateX, rotateY, rotateZ, repeat
+const useVideoTexture = ({
+  videoElement, loop,
+  muted, volume, sources,
+  playbackRate,
+
 }) => {
   // initialize video element
   videoElement = videoElement || document.createElement('video');
@@ -36,49 +35,36 @@ const loadVideoMesh = ({
     videoElement.appendChild(src);
   }
   document.body.appendChild(videoElement);
-
   // create material from video texture
   let texture = new THREE.VideoTexture(videoElement);
-  if (repeat) {
-    texture.repeat.x = repeat.x;
-    texture.repeat.y = repeat.y;
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-  }
-
   texture.minFilter = THREE.LinearFilter;
   texture.format = THREE.RGBFormat;
-  let material = new THREE.MeshBasicMaterial({ map: texture });
-  // create mesh from material and geometry
-  let videoMesh = new THREE.Mesh(geometry, material);
-  videoMesh.renderOrder = 1;
-  // configure geometry
-  if (invert) {
-    geometry.scale(-1, 1, 1);
+  return {
+    videoTexture: texture,
   }
-  if (computeBoundingSphere) {
-    geometry.computeBoundingSphere();
-  }
-  // set position
-  videoMesh.position.set(...position);
-  videoMesh.name = name;
-  videoMesh.userData.media = videoElement;
-  // rotate
-  rotateObject(videoMesh, rotateX, rotateY, rotateZ);
-  return videoMesh;
 
+}
+
+const useVideoElement = () => {
+  const element = useMemo(() => document.createElement("video"));
+
+  return {
+    videoElement: element,
+  }
 }
 
 const VideoPlayerContext = React.createContext([{}, () => { }]);
 
-const VideoPlayerProvider = ({ tracks, curIdx=0, ...props }) => {
+const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, ...props }) => {
 
-  const videoPlayer = useMemo(() => document.createElement("video"));
-  const videoMesh = loadVideoMesh({ videoElement: videoPlayer, ...tracks[curIdx].props });
-  
+  const videoElement = useMemo(() => {
+    document.createElement("video")
+  });
+  const { videoTexture } = useVideoTexture({ videoElement, ...tracks[curIdx].props });
+
   const [state, setState] = useState({
-    videoPlayer: videoPlayer,
-    videoMesh: videoMesh,
+    videoElement: videoElement,
+    videoTexture: videoTexture,
     tracks: tracks,
     currentTrackIndex: null,
     currentTrackName: null,
