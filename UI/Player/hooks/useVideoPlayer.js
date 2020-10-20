@@ -7,16 +7,27 @@ const useVideoPlayer = () => {
   const [state, setState] = useContext(VideoPlayerContext);
 
   function playTrack(index) {
-    if (index === state.currentTrackIndex && state.videoPlayer.media) {
-      togglePlay();
-    } else {
+    // console.log("currentTrackIndex", currentTrackIndex)
+    // TODO (jeremy) add back this switch
+    // if (index === state.currentTrackIndex && state.videoElement) {
+    //   togglePlay();
+    // } else {
+    if (state.isPlaying) state.videoElement.pause();
+    const promise = state.videoElement.play();
+    // if (promise !== undefined) {
+    //   promise.catch(error => {
+    //     // Auto-play was prevented
+    //     console.warn("Caught error trying to start video play:", error)
+    //   }).then(() => {
+    state.videoElement.addEventListener("canplay", () => {
       state.videoElement.pause();
-      // state.videoElement.addEventListener("canplay", () => {
-      //   state.videoElement.play();
-      // });
       state.videoElement.play();
-      setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
-    }
+      console.log("GOT INTO EVENT LISTENER, isPlaying?", state.isPlaying)
+    });
+    // })
+    // }
+    setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
+    // }
   }
 
   function togglePlay() {
@@ -32,7 +43,7 @@ const useVideoPlayer = () => {
   function playPreviousTrack() {
     const newIndex = ((state.currentTrackIndex + -1) % state.tracks.length + state.tracks.length) % state.tracks.length;
     playTrack(newIndex);
-}
+  }
 
   function playNextTrack() {
     const newIndex = (state.currentTrackIndex + 1) % state.tracks.length;
@@ -46,7 +57,7 @@ const useVideoPlayer = () => {
     currentTrackName: state.currentTrackIndex !== null && state.tracks[state.currentTrackIndex].name,
     currentTrackId: state.currentTrackIndex !== null && state.tracks[state.currentTrackIndex].id,
     trackList: state.tracks,
-    isPlaying: state.isPlaying,
+    isPlaying: !state.videoElement.paused,
     playPreviousTrack,
     playNextTrack,
     currentTime: state.videoElement.currentTime,

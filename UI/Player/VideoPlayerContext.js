@@ -51,7 +51,7 @@ const useVideo = ({ sources, loop = true, muted = true, volume = 1, playbackRate
 
 const VideoPlayerContext = React.createContext([{}, () => { }]);
 
-const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, loop = true, muted = false, volume = 1, playbackRate = 1.0, ...props }) => {
+const VideoPlayerProvider = ({ tracks, curIdx = 0, loop = true, muted = false, volume = 1, playbackRate = 1.0, ...props }) => {
 
   // const { videoElement, videoTexture } = useVideo({ sources: tracks[curIdx].sources })
   // const { videoTexture } = useVideoTexture({ videoElement });
