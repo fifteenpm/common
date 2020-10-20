@@ -57,9 +57,7 @@ const VideoPlayerContext = React.createContext([{}, () => { }]);
 
 const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, ...props }) => {
 
-  const videoElement = useMemo(() => {
-    document.createElement("video")
-  });
+  const videoElement = useMemo(() => document.createElement("video"));
   const { videoTexture } = useVideoTexture({ videoElement, ...tracks[curIdx].props });
 
   const [state, setState] = useState({
