@@ -17,15 +17,15 @@ const useVideoTexture = ({
 
 }) => {
   // initialize video element
-  videoElement = videoElement || document.createElement('video');
-  videoElement.codecs = "avc1.4D401E, mp4a.40.2";
-  videoElement.playsInline = true;
-  videoElement.post = "https://dummyimage.com/320x240/ffffff/fff";
-  videoElement.crossOrigin = 'anonymous';
-  videoElement.loop = loop;
-  videoElement.muted = muted;
-  videoElement.volume = volume;
-  videoElement.playbackRate = playbackRate;
+  // videoElement = videoElement || document.createElement('video');
+  // videoElement.codecs = "avc1.4D401E, mp4a.40.2";
+  // videoElement.playsInline = true;
+  // videoElement.post = "https://dummyimage.com/320x240/ffffff/fff";
+  // videoElement.crossOrigin = 'anonymous';
+  // videoElement.loop = loop;
+  // videoElement.muted = muted;
+  // videoElement.volume = volume;
+  // videoElement.playbackRate = playbackRate;
   for (let i = 0; i < sources.length; i++) {
     /* First source element creation */
     let src = document.createElement("source");
@@ -55,9 +55,20 @@ const useVideoElement = () => {
 
 const VideoPlayerContext = React.createContext([{}, () => { }]);
 
-const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, ...props }) => {
+const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, loop=true, muted=true, volume=0, playbackRate=1.0, ...props }) => {
 
-  const videoElement = useMemo(() => document.createElement("video"));
+  const videoElement = useMemo(() => {
+    const element = document.createElement("video")
+    element.codecs = "avc1.4D401E, mp4a.40.2";
+    element.playsInline = true;
+    element.post = "https://dummyimage.com/320x240/ffffff/fff";
+    element.crossOrigin = 'anonymous';
+    element.loop = loop;
+    element.muted = muted;
+    element.volume = volume;
+    element.playbackRate = playbackRate; 
+    return element
+  });
   const { videoTexture } = useVideoTexture({ videoElement, ...tracks[curIdx].props });
 
   const [state, setState] = useState({
