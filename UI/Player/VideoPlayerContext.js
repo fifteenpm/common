@@ -1,15 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 // import { loadVideoMesh } from "../../../Utils/LegacyLoaders";
-const rotateObject = (object, rotateX = 0, rotateY = 0, rotateZ = 0) => {
-  rotateX = (rotateX * Math.PI) / 180;
-  rotateY = (rotateY * Math.PI) / 180;
-  rotateZ = (rotateZ * Math.PI) / 180;
 
-  object.rotateX(rotateX);
-  object.rotateY(rotateY);
-  object.rotateZ(rotateZ);
-}
 const useVideoTexture = ({
   videoElement, loop,
   muted, volume, sources,
@@ -26,15 +18,7 @@ const useVideoTexture = ({
   // videoElement.muted = muted;
   // videoElement.volume = volume;
   // videoElement.playbackRate = playbackRate;
-  for (let i = 0; i < sources.length; i++) {
-    /* First source element creation */
-    let src = document.createElement("source");
-    // Attribute settings for my first source
-    src.setAttribute("src", sources[i].src);
-    src.setAttribute("type", sources[i].type);
-    videoElement.appendChild(src);
-  }
-  document.body.appendChild(videoElement);
+ 
   // create material from video texture
   let texture = new THREE.VideoTexture(videoElement);
   texture.minFilter = THREE.LinearFilter;
@@ -57,7 +41,8 @@ const VideoPlayerContext = React.createContext([{}, () => { }]);
 
 const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, loop=true, muted=true, volume=0, playbackRate=1.0, ...props }) => {
 
-  const videoElement = useMemo(() => {
+
+  const [videoElement, sources] = useMemo(() => {
     const element = document.createElement("video")
     element.codecs = "avc1.4D401E, mp4a.40.2";
     element.playsInline = true;
@@ -67,9 +52,19 @@ const VideoPlayerProvider = ({ tracks, videoGeometry, curIdx = 0, loop=true, mut
     element.muted = muted;
     element.volume = volume;
     element.playbackRate = playbackRate; 
-    return element
+    const currentSources = tracks[curIdx].sources;
+    for (let i = 0; i < currentSources.length; i++) {
+      /* First source element creation */
+      let src = document.createElement("source");
+      // Attribute settings for my first source
+      src.setAttribute("src", currentSources[i].src);
+      src.setAttribute("type", currentSources[i].type);
+      element.appendChild(src);
+    }
+    document.body.appendChild(element);
+    return [element, currentSources]
   });
-  const { videoTexture } = useVideoTexture({ videoElement, ...tracks[curIdx].props });
+  const { videoTexture } = useVideoTexture({ videoElement, sources });
 
   const [state, setState] = useState({
     videoElement: videoElement,
