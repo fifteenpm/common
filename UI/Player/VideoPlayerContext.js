@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
+// import { loadVideoMesh } from "../../../Utils/LegacyLoaders";
 
 const useVideoTexture = ({ videoElement }) => {
   // initialize video element
@@ -13,7 +14,7 @@ const useVideoTexture = ({ videoElement }) => {
 
 }
 
-const useVideoElement = ({ sources, loop = true, muted = false, volume = 1, playbackRate = 1.0, ...props }) => {
+const useVideoElement = ({ sources, loop = true, muted = true, volume = 1, playbackRate = 1.0, ...props }) => {
   const videoElement = useMemo(() => {
     const element = document.createElement("video")
     element.codecs = "avc1.4D401E, mp4a.40.2";

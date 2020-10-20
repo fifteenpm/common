@@ -96,6 +96,6 @@ export function useVideoTexture({
     }, [video])
 
     return {
-        texture,
+        videoTexture: texture,
     }
 };

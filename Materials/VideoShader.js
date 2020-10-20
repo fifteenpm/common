@@ -4,20 +4,22 @@ import React, { useEffect, useRef } from 'react';
 import { useFrame } from 'react-three-fiber';
 import { useVideoTexture } from '../Video/hooks';
 import { isIOS } from '../Utils/BrowserDetection';
+import useVideoPlayer from '../UI/Player/hooks/useVideoPlayer';
 
 export default function VideoShader({ materialRef, sources, shouldPlayVideo, ...props }) {
-    const { texture } = useVideoTexture({ sources, shouldPlayVideo })
+    // const {videoTexture} = useVideoPlayer()
+    const { videoTexture } = useVideoTexture({ sources, shouldPlayVideo })
     const uniforms = useRef()
 
     useEffect(() => {
-        if (texture && !uniforms.current) {
-            console.log("SETTING TEXTURE", texture)
+        if (videoTexture && !uniforms.current) {
+            console.log("SETTING TEXTURE", videoTexture)
             uniforms.current = {
-                samplerMap: { value: texture },
+                samplerMap: { value: videoTexture },
                 // isIOS: { value: isIOS }
             }
         }
-    }, [texture])
+    }, [videoTexture])
 
     // useFrame(() => {
     //     console.log(materialRef.current)
