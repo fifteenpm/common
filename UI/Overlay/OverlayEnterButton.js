@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import './OverlayEnterButton.css'
-
 /**
  *  Show 'ENTER' for releases on load.
  *  Show 'CLOSE' for releases on additional modal opens 
@@ -15,7 +14,7 @@ export default function OverlayEnterButton({ color, onClick, hasBeenClosed, cont
             "LOADING...",
         ]
     })
-
+    
     const [text, setText] = useState(ENTER);
 
     useEffect(() => {
