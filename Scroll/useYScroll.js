@@ -7,7 +7,7 @@ import clamp from 'lodash/clamp'
 export default function useYScroll(bounds, props) {
   const [{ y }, set] = useSpring(() => ({ y: 0, config: config.slow }))
   const fn = useCallback(
-    ({ xy: [, cy], previous: [, py], memo = y.getValue() }) => {
+    ({ xy: [, cy], previous: [, py], memo = y.get() }) => {
       const newY = clamp(memo + cy - py, ...bounds)
       set({ y: newY })
       return newY

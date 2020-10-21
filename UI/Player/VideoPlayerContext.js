@@ -1,4 +1,3 @@
-import videojs from 'video.js';
 import React, { useState, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 // import { loadVideoMesh } from "../../../Utils/LegacyLoaders";

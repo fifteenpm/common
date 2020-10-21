@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import videojs from 'video.js';
-import Hls from 'hls.js';
 
 export function useVideoTexture({
     sources,
