@@ -12,18 +12,14 @@ const useVideoPlayer = () => {
     // if (index === state.currentTrackIndex && state.videoElement) {
     //   togglePlay();
     // } else {
-    if (state.isPlaying) state.videoElement.pause();
-    const promise = state.videoElement.play();
+    if (state.isPlaying) state.videoPlayer.pause();
+    const promise = state.videoPlayer.play();
     // if (promise !== undefined) {
     //   promise.catch(error => {
     //     // Auto-play was prevented
     //     console.warn("Caught error trying to start video play:", error)
     //   }).then(() => {
-    state.videoElement.addEventListener("canplay", () => {
-      state.videoElement.pause();
-      state.videoElement.play();
-      console.log("GOT INTO EVENT LISTENER, isPlaying?", state.isPlaying)
-    });
+    
     // })
     // }
     setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
@@ -32,10 +28,10 @@ const useVideoPlayer = () => {
 
   function togglePlay() {
     if (state.isPlaying) {
-      state.videoElement.pause();
+      state.videoPlayer.pause();
     } else {
-      state.videoElement.visible = true;
-      state.videoElement.play();
+      // state.videoPlayer.visible = true;
+      state.videoPlayer.play();
     }
     setState(state => ({ ...state, isPlaying: !state.isPlaying }));
   }
