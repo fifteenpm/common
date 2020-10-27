@@ -7,8 +7,12 @@ const VideoPlayerContext = React.createContext([{}, () => { }]);
 
 const VideoPlayerProvider = ({ tracks, curIdx = 0, loop = true, muted = false, volume = 1, playbackRate = 1.0, ...props }) => {
 
-  // const { videoElement, videoTexture } = useVideo({ sources: tracks[curIdx].sources })
-  // const { videoTexture } = useVideoTexture({ videoElement });
+  const [sources, setSources] = useState(tracks[curIdx].sources)
+
+  useEffect(() => {
+    setSources(tracks[curIdx].sources)
+  }, [curIdx])
+
   const { videoTexture, videoElement, videoPlayer } = useMemo(() => {
 
     const videoElement = document.createElement("video")
@@ -20,13 +24,8 @@ const VideoPlayerProvider = ({ tracks, curIdx = 0, loop = true, muted = false, v
     videoElement.muted = muted;
     videoElement.volume = volume;
     videoElement.playbackRate = playbackRate;
-
-    // todo temp
-    const sources = tracks[curIdx].sources;
-
-    // todo does placement of this command matter
     document.body.appendChild(videoElement);
-    
+     
     // add texture
     const videoTexture = new THREE.VideoTexture(videoElement);
     videoTexture.minFilter = THREE.LinearFilter;
@@ -63,12 +62,13 @@ const VideoPlayerProvider = ({ tracks, curIdx = 0, loop = true, muted = false, v
     } else {
       alert("hm, looks like you're browser isn't compatible with this zone.")
     }
+    videoElement.currentTime = 120
     return {
       videoElement,
       videoTexture,
       videoPlayer,
     }
-  });
+  }, [sources]);
 
 
   const [state, setState] = useState({

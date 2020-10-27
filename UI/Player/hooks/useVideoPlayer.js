@@ -22,6 +22,7 @@ const useVideoPlayer = () => {
     
     // })
     // }
+    
     setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
     // }
   }
@@ -30,7 +31,6 @@ const useVideoPlayer = () => {
     if (state.isPlaying) {
       state.videoPlayer.pause();
     } else {
-      // state.videoPlayer.visible = true;
       state.videoPlayer.play();
     }
     setState(state => ({ ...state, isPlaying: !state.isPlaying }));
