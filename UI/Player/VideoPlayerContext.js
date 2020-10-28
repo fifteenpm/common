@@ -62,7 +62,6 @@ const VideoPlayerProvider = ({ tracks, curIdx = 0, loop = true, muted = false, v
     } else {
       alert("hm, looks like you're browser isn't compatible with this zone.")
     }
-    videoElement.currentTime = 120
     return {
       videoElement,
       videoTexture,

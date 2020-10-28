@@ -1,8 +1,9 @@
 // source: https://codesandbox.io/embed/r3f-train-l900i
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSpring, config } from '@react-spring/core'
 import { useGesture } from 'react-use-gesture'
 import clamp from 'lodash/clamp'
+// import { isMobile } from '../Utils/BrowserDetection'
 
 export default function useYScroll(bounds, props) {
   const [{ y }, set] = useSpring(() => ({ y: 0, config: config.slow }))
@@ -14,7 +15,14 @@ export default function useYScroll(bounds, props) {
     },
     [bounds, y, set]
   )
-  const bind = useGesture({ onWheel: fn, onDrag: fn }, props)
+  const gestureProps = useMemo(() => {
+    let props = { onWheel: fn, onDrag: fn }
+    // if (isMobile) {
+    // props = { onMove: fn }
+    // }
+    return props
+  })
+  const bind = useGesture(gestureProps, props)
   useEffect(() => props && props.domTarget && bind(), [props, bind])
   return [y, bind]
 }
