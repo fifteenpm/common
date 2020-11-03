@@ -1,35 +1,37 @@
 import { useContext, useEffect } from 'react';
 import { VideoPlayerContext } from "../VideoPlayerContext";
-import { loadVideo } from "../../../Utils/LegacyLoaders";
+
 
 const useVideoPlayer = () => {
 
   const [state, setState] = useContext(VideoPlayerContext);
 
   function playTrack(index) {
-    if (index === state.currentTrackIndex && state.videoPlayer.media) {
-      togglePlay();
-    } else {
-      state.videoPlayer.pause();
-      state.videoPlayer.mesh = loadVideo({ videoElement: state.videoPlayer, ...state.tracks[index].meta });
-      state.videoPlayer.media = state.videoPlayer.mesh.userData.media;
-      // state.videoPlayer.media.visible = false;
-      state.videoPlayer.media.addEventListener("canplay", () => {
-        // state.videoPlayer.media.playsinline = true;
-        state.videoPlayer.media.play();
-        // state.videoPlayer.mesh.visible = true;
-      });
-      state.videoPlayer.play();
-      setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
-    }
+    // console.log("currentTrackIndex", currentTrackIndex)
+    // TODO (jeremy) add back this switch
+    // if (index === state.currentTrackIndex && state.videoElement) {
+    //   togglePlay();
+    // } else {
+    if (state.isPlaying) state.videoPlayer.pause();
+    const promise = state.videoPlayer.play();
+    // if (promise !== undefined) {
+    //   promise.catch(error => {
+    //     // Auto-play was prevented
+    //     console.warn("Caught error trying to start video play:", error)
+    //   }).then(() => {
+    
+    // })
+    // }
+    
+    setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
+    // }
   }
 
   function togglePlay() {
     if (state.isPlaying) {
-      state.videoPlayer.media.pause();
+      state.videoPlayer.pause();
     } else {
-      state.videoPlayer.media.visible = true;
-      state.videoPlayer.media.play();
+      state.videoPlayer.play();
     }
     setState(state => ({ ...state, isPlaying: !state.isPlaying }));
   }
@@ -45,17 +47,18 @@ const useVideoPlayer = () => {
   }
 
   return {
-    videoPlayer: state.videoPlayer,
+    videoElement: state.videoElement,
     playTrack,
     togglePlay,
     currentTrackName: state.currentTrackIndex !== null && state.tracks[state.currentTrackIndex].name,
     currentTrackId: state.currentTrackIndex !== null && state.tracks[state.currentTrackIndex].id,
     trackList: state.tracks,
-    isPlaying: state.isPlaying,
+    isPlaying: !state.videoElement.paused,
     playPreviousTrack,
     playNextTrack,
-    currentTime: state.videoPlayer.currentTime,
+    currentTime: state.videoElement.currentTime,
     bpm: state.currentTrackIndex !== null && state.tracks[state.currentTrackIndex].bpm,
+    videoTexture: state.videoTexture,
   }
 };
 

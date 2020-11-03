@@ -20,9 +20,8 @@ export default function Ground29({ materialRef, ...props }) {
         const textureMaps = [colorMap, normalMap, aoMap, roughnessMap, displacementMap]
         return tileTextureMaps(textureMaps, props);
     });
-
+    console.log("SIDE", props)
     return <meshStandardMaterial
-        {...props}
         ref={materialRef}
         lights
         receiveShadow
@@ -35,6 +34,6 @@ export default function Ground29({ materialRef, ...props }) {
         displacementScale={props.displacementScale || .01}
         displacementBias={props.displacementBias || 0}
         displacementMap={displacementMap}
-
+        {...props}
     />
 }

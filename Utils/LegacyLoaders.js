@@ -31,7 +31,7 @@ export const loadImage = ({ geometry, url, name, invert, position, rotateX, rota
 }
 
 //  initialize an object of type 'video'
-export const loadVideo = ({
+export const loadVideoMesh = ({
   videoElement, geometry, url, name, position, loop,
   muted, mimetype, invert, volume, sources,
   computeBoundingSphere, playbackRate,

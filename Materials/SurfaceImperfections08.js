@@ -5,7 +5,7 @@ import diffuse from "../assets/textures/surface-imperfections08/SurfaceImperfect
 import glossiness from "../assets/textures/surface-imperfections08/SurfaceImperfections08_var1.jpg";
 import normal from "../assets/textures/surface-imperfections08/SurfaceImperfections08_nrm.jpg";
 
-export function SurfaceImperfections08({ materialRef, ...props }) {
+export default function SurfaceImperfections08({ materialRef, ...props }) {
     const [diffuseMap, glossinessMap, normalMap, envMap] = useMemo(() => {
         const textureLoader = new THREE.TextureLoader();
         const diffuseMap = textureLoader.load(diffuse);
@@ -15,6 +15,14 @@ export function SurfaceImperfections08({ materialRef, ...props }) {
         const textureMaps = [diffuseMap, glossinessMap, normalMap, envMap];
         return tileTextureMaps(textureMaps, props);
     });
-    return <meshStandardMaterial ref={materialRef} map={diffuseMap} roughnessMap={glossinessMap} roughness={0.1} normalMap={normalMap} envMap={envMap} roughness={-1} // invert roughness to get glossiness
+    return <meshStandardMaterial
+        ref={materialRef}
+        map={diffuseMap}
+        roughnessMap={glossinessMap}
+        // roughness={0.1}
+        normalMap={normalMap}
+        envMap={envMap}
+        // roughness={-1} // invert roughness to get glossiness
+        {...props}
     />;
 }
