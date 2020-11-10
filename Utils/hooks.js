@@ -53,5 +53,6 @@ export function useKeyPress(targetKey) {
         };
     }, []); // Empty array ensures that effect is only run on mount and unmount
 
+    
     return keyPressed;
 }
