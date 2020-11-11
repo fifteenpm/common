@@ -85,11 +85,12 @@ export default function TileGenerator({ tileSize, grid, tileComponent, tileProps
 
     const curTiles = Object.values(tiles.current);
     return <>
-        {curTiles.map(props =>
-            <group key={props.name}>
+        {curTiles.map(metaProps =>
+            <group key={metaProps.name}>
                 <MemoizedTile
                     tileComponent={tileComponent}
-                    tileProps={tileProps}
+                    {...tileProps}
+                    {...metaProps}
                 />
             </group>
         )}
@@ -100,5 +101,5 @@ export default function TileGenerator({ tileSize, grid, tileComponent, tileProps
 // that could potentially change what a tile looks like
 // while the user is still viewing it!
 export const MemoizedTile = React.memo(props => {
-    return <>{props.tileComponent(props.tileProps)}</>;
+    return <>{props.tileComponent(props)}</>;
 }, props => !props.isInitialRender);
