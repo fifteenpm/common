@@ -1,5 +1,5 @@
-import * as THREE from 'three';
 import { cloneDeep } from 'lodash';
+import * as THREE from 'three';
 
 
 export function cryptoRandom(arrayLength) {
@@ -11,6 +11,13 @@ export function cryptoRandom(arrayLength) {
 export function randomArrayVal(array) {
     const randInt = THREE.Math.randInt(0, array.length - 1);
     return array[randInt];
+}
+
+export const randomObjectVal = (obj) => {
+    const keys = Object.keys(obj);
+    const numKeys = keys.length;
+    const randIdx = THREE.Math.randInt(0, numKeys - 1);
+    return obj[keys[randIdx]];
 }
 
 /**
@@ -27,7 +34,7 @@ export function shuffleArray(a) {
 }
 
 
-export function selectNRandomFromArray(arr, numElts, canShuffleArray=true) {
+export function selectNRandomFromArray(arr, numElts, canShuffleArray = true) {
     let newArr = [];
     if (arr.length < numElts) {
         for (let i = 0; i < numElts - arr.length; i++) {

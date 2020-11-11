@@ -6,7 +6,7 @@ extend({ FlyControls })
 
 export default function Flying(props) {
     const { gl } = useThree()
-    const controls = useRef();
+    const controls = props.passthroughRef? props.passthroughRef : useRef();
     const camera = props.camera ? props.camera : useThree().camera
     const delta = props.delta ? props.delta : .001;
     useFrame(() => { controls.current && controls.current.update(delta) });

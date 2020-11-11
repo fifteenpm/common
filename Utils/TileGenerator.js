@@ -2,12 +2,6 @@ import React, { useRef, useState } from 'react';
 import { useFrame, useThree } from 'react-three-fiber';
 import * as THREE from 'three';
 
-// We don't want to constantly refresh tiles - 
-// that could potentially change what a tile looks like
-// while the user is still viewing it!
-export const MemoizedTile = React.memo(props => {
-    return <>{props.tileComponent(props)}</>;
-}, props => !props.isInitialRender);
 
 const nameTile = pos => "tile_" + pos.x + "_" + pos.z;
 
@@ -66,7 +60,7 @@ function destroyTile({ tiles, tile, scene }) {
     delete tiles.current[tile.name];
 }
 
-export default function TileGenerator({ tileSize, grid, tileComponent, tileResources }) {
+export default function TileGenerator({ tileSize, grid, tileComponent, tileProps }) {
     const { camera, scene, size } = useThree();
     const tiles = useRef({});
     const [lastUpdateTime, setLastUpdateTime] = useState(0);
@@ -95,11 +89,16 @@ export default function TileGenerator({ tileSize, grid, tileComponent, tileResou
             <group key={props.name}>
                 <MemoizedTile
                     tileComponent={tileComponent}
-                    tileResources={tileResources}
-                    {...props}
+                    tileProps={tileProps}
                 />
             </group>
         )}
     </>;
 }
 
+// We don't want to constantly refresh tiles - 
+// that could potentially change what a tile looks like
+// while the user is still viewing it!
+export const MemoizedTile = React.memo(props => {
+    return <>{props.tileComponent(props.tileProps)}</>;
+}, props => !props.isInitialRender);
