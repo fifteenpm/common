@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import { extend, useFrame, useThree } from 'react-three-fiber';
 import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
 
@@ -12,9 +12,6 @@ export default function FirstPerson({ curCamera, passthroughRef, ...props }) {
     const { gl } = useThree();    
     const delta = props.delta ? props.delta : .1;
     useFrame(() => { controls.current && controls.current.update(delta) });
-    useFrame(() => {
-        console.log("FirstPerson.curCamera.position:", curCamera.position)
-    })
     return (
         <firstPersonControls
             ref={controls}
