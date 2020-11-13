@@ -16,7 +16,9 @@ export default function Orbit({ curCamera, passthroughRef, ...props }) {
     useFrame(() => { controls.current && controls.current.update(delta) });
     useEffect(() => {
         controls.current.domElement = gl.domElement
+        console.log("TOUCHES", controls.current.touches)
         controls.current.touches.TWO = THREE.TOUCH.ROTATE
+        console.log("THREE.TOUCH", THREE.TOUCH)
     }, [gl.domElement])
     return (
         <orbitControls

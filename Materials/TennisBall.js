@@ -15,7 +15,6 @@ export default function TennisBall({ materialRef, ...props }) {
     });
     return <meshStandardMaterial
         ref={materialRef}
-        overdraw={.5}
         map={colorMap}
         {...props}
     />;
