@@ -9,7 +9,6 @@ export default function TennisBall({ materialRef, ...props }) {
     const [colorMap] = useMemo(() => {
         const textureLoader = new THREE.TextureLoader();
         const colorMap = textureLoader.load(tennisBallMap);
-        console.log("COLOR MAP:", colorMap)
         const textureMaps = [colorMap];
         return tileTextureMaps(textureMaps, props);
     });
