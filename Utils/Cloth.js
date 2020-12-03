@@ -4,11 +4,18 @@ import { Vector3 } from 'three';
 import Particle from './particle';
 
 class Cloth {
-    constructor(xSegments, ySegments, distance) {
+    constructor({ xSegments, ySegments, distance, shouldSetPin, windStrength, mass, windStrengthConstant, windStrengthTimeDivisor }) {
         this.xSegments = xSegments || 10;
         this.ySegments = ySegments || 10;
         this.distance = distance || 25;
+        this.mass = mass || 50
+        this.windStrength = windStrength || 40;
+        this.windStrengthConstant = windStrengthConstant || 500 + 1600;
+        this.windStrengthTimeDivisor = windStrengthTimeDivisor || 700000; 
         this.windEnabled = true;
+        this.customShouldSetPin = shouldSetPin
+        
+
 
         this.setupPhysics();
         this.createGeometryFunction();
@@ -18,12 +25,8 @@ class Cloth {
 
     setupPhysics() {
         const GRAVITY = 9.81;
-        this.mass = 50;
         this.gravityForce = new Vector3(0, -GRAVITY, 0).multiplyScalar(this.mass);
-
-        this.windStrength = 40;
         this.windForce = new Vector3();
-
         this.tmpForce = new Vector3();
         this.diff = new Vector3();
     }
@@ -52,10 +55,18 @@ class Cloth {
                 );
                 const particle = new Particle(position);
                 particle.setMass(this.mass);
-                particle.setPinned(u === this.xSegments);
+
+                particle.setPinned(this.shouldSetPin(u, v))
                 this.particles.push(particle);
             }
         }
+    }
+
+    shouldSetPin(u, v) {
+        if (this.customShouldSetPin) {
+            return this.customShouldSetPin(u, v, this.xSegments, this.ySegments)
+        }
+        return u === this.ySegments
     }
 
     createConstraints() {
@@ -96,7 +107,7 @@ class Cloth {
 
     updateWindForce(delta) {
         const time = Date.now();
-        this.windStrength = Math.cos(time / 700000) * 500 + 1600;
+        this.windStrength = Math.cos(time / this.windStrengthTimeDivisor) * this.windStrengthConstant;
         this.windForce.set(
             Math.sin(time / 2000),
             Math.cos(time / 3000),
