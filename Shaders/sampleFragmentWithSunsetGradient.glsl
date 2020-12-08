@@ -10,5 +10,6 @@ void main() {
   float mixValue = distance(vUv,vec2(.5,.5));
   vec3 color = mix(color1,color2,mixValue);
   
-  gl_FragColor = vec4(color, samplerTexture.a);
+  // gl_FragColor = vec4(color, samplerTexture.a);
+  gl_FragColor = vec4(1., 0., 0., samplerTexture.a);
 }
