@@ -157,7 +157,7 @@ export const BloomEffect = React.memo(({ }) => {
     return (
         <effectComposer ref={composer} args={[gl]}>
             <renderPass attachArray="passes" scene={scene} camera={camera} />
-            <unrealBloomPass attachArray="passes" threshold={0} strength={1.935} radius={0} exposure={.1}/>
+            <unrealBloomPass attachArray="passes" threshold={0} strength={1.835} radius={0} exposure={.1}/>
         </effectComposer>
     )
 });
