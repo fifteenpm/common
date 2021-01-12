@@ -30,7 +30,6 @@ export default function RGBAShader({ materialRef, ...props }) {
 	// 	// 	gl_Position = projectionMatrix * mvPosition;
 	// 	// 	vUv = uv;`
 	// 	// )// vertex)
-	// 	// console.log("FRAGMENT TO BEGIN WITH", shader.fragmentShader)
 
 	// 	shader.fragmentShader = shader.fragmentShader.replace(
 	// 		'uniform vec3 diffuse;',
@@ -56,8 +55,6 @@ export default function RGBAShader({ materialRef, ...props }) {
 	// 	//vec3 colorWithLight = color + outgoingLight
 	// 	//gl_FragColor = vec4(colorWithLight, samplerTexture.a);
 	//     shader.uniforms.samplerMap = { value: textureLoader.load(props.imagePath) };
-	//     console.log("UPDATED VERTEX", shader.vertexShader)
-	// 	console.log("UPDATED FRAGMENT", shader.fragmentShader)
 	// }, [])
 	useEffect(() => {
 		const textureLoader = new THREE.TextureLoader();
@@ -67,7 +64,7 @@ export default function RGBAShader({ materialRef, ...props }) {
 			},
 			rgbColor: {
 				value: new THREE.Vector3(0., 1., 0),
-			}
+			},
 		}
 	}, [])
 

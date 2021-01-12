@@ -52,10 +52,8 @@ export function useVideoTexture({
             // document.body.appendChild(video);
 
     useEffect(() => {
-        console.log('playable', playable, 'shouldplay', shouldPlayVideo)
         if (playable && shouldPlayVideo) {
             const promise = player.play()
-            console.log("PLAY IS TRIGGERED: Promise:", promise)
             // player.bigPlayButton.show()
             // var promise = document.querySelector(videoElement).play()
             if (promise !== undefined) {
@@ -63,9 +61,7 @@ export function useVideoTexture({
                     // Auto-play was prevented
                     console.error("Caught error trying to start video play:", error)
                 }).then(() => {
-                    console.log("playing... Promise.then:", promise)
                     if (player.paused){
-                        console.log("PLAY from paused!",)
                         player.play()
                     }
                     
