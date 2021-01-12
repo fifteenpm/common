@@ -15,8 +15,6 @@ class Cloth {
         this.windEnabled = true;
         this.customShouldSetPin = shouldSetPin
         
-
-
         this.setupPhysics();
         this.createGeometryFunction();
         this.createParticles();
@@ -109,9 +107,9 @@ class Cloth {
         const time = Date.now();
         this.windStrength = Math.cos(time / this.windStrengthTimeDivisor) * this.windStrengthConstant;
         this.windForce.set(
-            Math.sin(time / 2000),
-            Math.cos(time / 3000),
-            Math.sin(time / 1000)
+            Math.sin(time),// / 2000),
+            Math.cos(time),// / 3000),
+            Math.sin(time),// / 1000)
         );
         this.windForce.normalize().multiplyScalar(this.windStrength);
     }
