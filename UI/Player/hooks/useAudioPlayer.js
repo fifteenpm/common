@@ -19,7 +19,7 @@ const useAudioPlayer = () => {
     } else {
       state.audioPlayer.pause();
       state.audioPlayer = new Audio(state.tracks[index].url);
-      state.audioPlayer.crossOrigin = "";
+      state.audioPlayer.crossOrigin = "*";
       if (!isSafari) {
         state.audioStream = new AudioStreamer(state.audioPlayer);
       }
