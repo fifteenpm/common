@@ -146,7 +146,7 @@ export const BloomFilmEffect = React.memo(({ }) => {
 
 
 
-export const BloomEffect = React.memo(({ }) => {
+export const BloomEffect = React.memo(({ threshold = 0, strength = 1.955, radius = 0, exposure = .1 }) => {
     const composer = useRef()
     const { scene, gl, size, camera, clock } = useThree()
     const [v, setV] = useState();
@@ -157,7 +157,7 @@ export const BloomEffect = React.memo(({ }) => {
     return (
         <effectComposer ref={composer} args={[gl]}>
             <renderPass attachArray="passes" scene={scene} camera={camera} />
-            <unrealBloomPass attachArray="passes" threshold={0} strength={1.895} radius={0} exposure={.1}/>
+            <unrealBloomPass attachArray="passes" threshold={threshold} strength={strength} radius={radius} exposure={exposure} />
         </effectComposer>
     )
 });
