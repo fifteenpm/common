@@ -17,7 +17,7 @@ export default function WaterMaterial({
     waterWidth = 128,
     waterBounds = 512,
     waterMaxHeight = .1,
-    mouseSize = 2,
+    mouseSize = 5,
     viscosityConstant = 0.001,
     ...props
 }) {
@@ -113,21 +113,13 @@ export default function WaterMaterial({
     }
     const { mouse, raycaster } = useThree()
     useFrame(() => {
-        // console.log("RAY", raycaster)
-        // const uniforms = heightmapVariable.material.uniforms;
         if (!gpuCompute.current) return;
-
-        // const uniforms = heightmapVariable.current.material.uniforms;
         heightmapMaterialUniforms.current.mousePos.value.set(
             disturbancePos.current.x,
             disturbancePos.current.y,
         )
-
         gpuCompute.current.compute();
-
         shaderUniforms.current.heightmap.value = gpuCompute.current.getCurrentRenderTarget(heightmapVariable.current).texture;
-
-        // console.log("disturbancePos:", disturbancePos.current)
     })
 
     return <shaderMaterial
