@@ -18,12 +18,14 @@ export default function WaterMaterial({
     waterBounds = 512,
     ...props
 }) {
+    const gpuCompute = useRef()
     const shaderUniforms = useRef()
     const heightMapUniforms = useRef({})
     const heightmapVariable = useRef()
-    const gpuCompute = useRef()
+    const heightmapMaterialUniforms = useRef()
+    // const gpuCompute = useRef()
     const { gl } = useThree()
-    const mousePos = useRef(new THREE.Vector2(0, 0))
+    const disturbancePos = useRef(new THREE.Vector2(0, 0))
     useEffect(() => {
         shaderUniforms.current = THREE.UniformsUtils.merge([
             THREE.ShaderLib['phong'].uniforms,
@@ -50,30 +52,30 @@ export default function WaterMaterial({
         fillTexture(heightmap0)
         heightmapVariable.current = gpuCompute.current.addVariable("heightmap", heightMapFragmentShader, heightmap0);
         gpuCompute.current.setVariableDependencies(heightmapVariable.current, [heightmapVariable.current]);
-
         // TODO (jeremy) this is original pattern
-        // heightmapVariable.material.uniforms.mousePos = { value: mousePos.current };
-        // heightmapVariable.material.uniforms.mouseSize = { value: 20.0 };
-        // heightmapVariable.material.uniforms.viscosityConstant = { value: 0.03 };
-        // heightmapVariable.material.defines.BOUNDS = waterBounds.toFixed(1);
-        heightMapUniforms.current = {
-            mousePos: { value: mousePos.current },
+        // heightmapVariable.current.material.uniforms.mousePos = { value: disturbancePos.current };
+        // heightmapVariable.current.material.uniforms.mouseSize = { value: 20.0 };
+        // heightmapVariable.current.material.uniforms.viscosityConstant = { value: 0.03 };
+        // heightmapVariable.current.material.defines.BOUNDS = waterBounds.toFixed(1);
+        heightmapMaterialUniforms.current = {
+            mousePos: { value: disturbancePos.current },
             mouseSize: { value: 20.0 },
             viscosityConstant: { value: 0.03 },
         }
-        heightmapVariable.current.material.uniforms = heightMapUniforms.current
+        heightmapVariable.current.material.uniforms = heightmapMaterialUniforms.current
         heightmapVariable.current.material.defines.BOUNDS = waterBounds.toFixed(1);
 
         const error = gpuCompute.current.init();
         if (error !== null) {
             console.error(error);
         }
+        
     }, [])
 
     function fillTexture(heightmap0) {
         const simplex = new SimplexNoise();
-        const waterMaxHeight = 19;
-        const waveRippleFactor = 0.95;
+        const waterMaxHeight = 10;
+        const waveRippleFactor = 0.095;
         const TEXTURE_WIDTH = waterWidth / 2;
 
         function noise(x, y, z) {
@@ -112,9 +114,17 @@ export default function WaterMaterial({
         // const uniforms = heightmapVariable.material.uniforms;
         if (!gpuCompute.current) return;
 
+        // const uniforms = heightmapVariable.current.material.uniforms;
+        heightmapMaterialUniforms.current.mousePos.value.set(
+            disturbancePos.current.x,
+            disturbancePos.current.y,
+        )
+
         gpuCompute.current.compute();
 
         shaderUniforms.current.heightmap.value = gpuCompute.current.getCurrentRenderTarget(heightmapVariable.current).texture;
+
+        console.log("disturbancePos:", disturbancePos.current)
     })
 
     return <shaderMaterial
@@ -128,6 +138,7 @@ export default function WaterMaterial({
         opacity={opacity}
         uniforms={shaderUniforms.current}
         vertexShader={waterVertexShader}
+        userData={{ disturbancePos: disturbancePos }}
         fragmentShader={THREE.ShaderChunk['meshphong_frag']}
     />
 }
