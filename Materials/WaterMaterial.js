@@ -11,11 +11,14 @@ export default function WaterMaterial({
     materialRef,
     opacity = .5,
     shininess = 60,
-    color = new THREE.Color(0x0f5e9c),
-    specularColor = new THREE.Color(0x111111),
+    color = 0x0f5e9c,
+    specularColor = 0x111111,
     waterOpacity = 0.5,
     waterWidth = 128,
     waterBounds = 512,
+    waterMaxHeight = .1,
+    mouseSize = 2,
+    viscosityConstant = 0.001,
     ...props
 }) {
     const gpuCompute = useRef()
@@ -26,13 +29,14 @@ export default function WaterMaterial({
     // const gpuCompute = useRef()
     const { gl } = useThree()
     const disturbancePos = useRef(new THREE.Vector2(0, 0))
+
     useEffect(() => {
         shaderUniforms.current = THREE.UniformsUtils.merge([
             THREE.ShaderLib['phong'].uniforms,
             {
                 heightmap: { value: null },
-                diffuse: { value: color },
-                specular: { value: specularColor },
+                diffuse: { value: new THREE.Color(color) },
+                specular: { value: new THREE.Color(specularColor) },
                 shininess: { value: shininess },
                 // todo (jeremy) this is copied from yahceph so...
                 transparency: true,
@@ -59,8 +63,8 @@ export default function WaterMaterial({
         // heightmapVariable.current.material.defines.BOUNDS = waterBounds.toFixed(1);
         heightmapMaterialUniforms.current = {
             mousePos: { value: disturbancePos.current },
-            mouseSize: { value: 20.0 },
-            viscosityConstant: { value: 0.03 },
+            mouseSize: { value: mouseSize },
+            viscosityConstant: { value: viscosityConstant },
         }
         heightmapVariable.current.material.uniforms = heightmapMaterialUniforms.current
         heightmapVariable.current.material.defines.BOUNDS = waterBounds.toFixed(1);
@@ -74,7 +78,6 @@ export default function WaterMaterial({
 
     function fillTexture(heightmap0) {
         const simplex = new SimplexNoise();
-        const waterMaxHeight = 10;
         const waveRippleFactor = 0.095;
         const TEXTURE_WIDTH = waterWidth / 2;
 
@@ -124,7 +127,7 @@ export default function WaterMaterial({
 
         shaderUniforms.current.heightmap.value = gpuCompute.current.getCurrentRenderTarget(heightmapVariable.current).texture;
 
-        console.log("disturbancePos:", disturbancePos.current)
+        // console.log("disturbancePos:", disturbancePos.current)
     })
 
     return <shaderMaterial
