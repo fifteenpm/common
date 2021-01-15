@@ -2,12 +2,6 @@ import React, { useRef, useState } from 'react';
 import { useFrame, useThree } from 'react-three-fiber';
 import * as THREE from 'three';
 
-// We don't want to constantly refresh tiles - 
-// that could potentially change what a tile looks like
-// while the user is still viewing it!
-export const MemoizedTile = React.memo(props => {
-    return <>{props.tileComponent(props)}</>;
-}, props => !props.isInitialRender);
 
 const nameTile = pos => "tile_" + pos.x + "_" + pos.z;
 
@@ -16,11 +10,11 @@ function tileNeighbors(pos, tileSize) {
     // TODO
 }
 
-function addTiles({ tiles, time, grid, camera, tileSize }) {
+function addTiles({ tiles, time, gridSize, camera, tileSize }) {
     // force integer position rounded to nearest tilesize (integers for navigation)
     const cameraX = Math.floor(camera.position.x / tileSize) * tileSize;
     const cameraZ = Math.floor(camera.position.z / tileSize) * tileSize;
-    const halfTiles = Math.floor(grid / 2);
+    const halfTiles = Math.floor(gridSize / 2);
     const halfTilesX = halfTiles;
     const halfTilesY = halfTiles;
     // TODO want to get something like this working: https://discourse.threejs.org/t/functions-to-calculate-the-visible-width-height-at-a-given-z-depth-from-a-perspective-camera/269/19
@@ -66,7 +60,7 @@ function destroyTile({ tiles, tile, scene }) {
     delete tiles.current[tile.name];
 }
 
-export default function TileGenerator({ tileSize, grid, tileComponent, tileResources }) {
+export default function TileGenerator({ tileSize, gridSize, tileComponent, tileProps }) {
     const { camera, scene, size } = useThree();
     const tiles = useRef({});
     const [lastUpdateTime, setLastUpdateTime] = useState(0);
@@ -76,7 +70,7 @@ export default function TileGenerator({ tileSize, grid, tileComponent, tileResou
         if (shouldTriggerTileGeneration()) {
             setLastUpdateTime(time);
             boundary.current = { x: camera.position.x, z: camera.position.z };
-            addTiles({ tiles, grid, time, camera, tileSize });
+            addTiles({ tiles, gridSize, time, camera, tileSize });
             refreshTiles({ scene, tiles, time });
         }
     });
@@ -91,15 +85,21 @@ export default function TileGenerator({ tileSize, grid, tileComponent, tileResou
 
     const curTiles = Object.values(tiles.current);
     return <>
-        {curTiles.map(props =>
-            <group key={props.name}>
+        {curTiles.map(metaProps =>
+            <group key={metaProps.name}>
                 <MemoizedTile
                     tileComponent={tileComponent}
-                    tileResources={tileResources}
-                    {...props}
+                    {...tileProps}
+                    {...metaProps}
                 />
             </group>
         )}
     </>;
 }
 
+// We don't want to constantly refresh tiles - 
+// that could potentially change what a tile looks like
+// while the user is still viewing it!
+export const MemoizedTile = React.memo(props => {
+    return <>{props.tileComponent(props)}</>;
+}, props => !props.isInitialRender);

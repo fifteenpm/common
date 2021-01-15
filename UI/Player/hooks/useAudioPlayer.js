@@ -10,11 +10,16 @@ const useAudioPlayer = () => {
 
   function playTrack(index) {
     if (index === state.currentTrackIndex) {
-      togglePlay();
+      try {
+        togglePlay();
+      } catch(e){
+        console.error(e)
+      }
+      
     } else {
       state.audioPlayer.pause();
-      state.audioPlayer = new Audio(state.tracks[index].file);
-      state.audioPlayer.crossOrigin = "anonymous";
+      state.audioPlayer = new Audio(state.tracks[index].url);
+      state.audioPlayer.crossOrigin = "*";
       if (!isSafari) {
         state.audioStream = new AudioStreamer(state.audioPlayer);
       }
@@ -27,7 +32,12 @@ const useAudioPlayer = () => {
     if (state.isPlaying) {
       state.audioPlayer.pause();
     } else {
-      state.audioPlayer.play();
+      try {
+        state.audioPlayer.play();
+      } catch(e){
+        console.error(e)
+      }
+      
     }
     setState(state => ({ ...state, isPlaying: !state.isPlaying }));
   }

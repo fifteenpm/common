@@ -20,7 +20,6 @@ export default function Ground29({ materialRef, ...props }) {
         const textureMaps = [colorMap, normalMap, aoMap, roughnessMap, displacementMap]
         return tileTextureMaps(textureMaps, props);
     });
-    console.log("SIDE", props)
     return <meshStandardMaterial
         ref={materialRef}
         lights

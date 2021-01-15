@@ -12,7 +12,6 @@
 //   const player = videojs(video)
 //   // play video
 //   if (play) {
-//     console.log("PLAY player:", player)
 //     // video.play();
 //     player.play()
 //   }

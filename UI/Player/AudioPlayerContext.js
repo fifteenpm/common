@@ -1,3 +1,4 @@
+import { format } from 'path';
 import React, { useState, useMemo } from 'react';
 import { formatSoundcloudSrc } from "../../Audio/SoundcloudUtils"
 
@@ -6,11 +7,14 @@ const AudioPlayerContext = React.createContext([{}, () => {}]);
 const AudioPlayerProvider = ({tracks, ...props}) => {
   const loadedTracks = useMemo(() => {
     return tracks.map(track => {
+      let url = undefined
+      if (track.type == "s3"){
+        url = track.url
+      } else if(track.type=="soundcloud") {
+        url = formatSoundcloudSrc(track.id, track.secretToken)
+      }
       return {
-        file: formatSoundcloudSrc(
-          track.id,
-          track.secretToken
-        ),
+        url: url,
         ...track
       }
     })

@@ -7,24 +7,12 @@ const useVideoPlayer = () => {
   const [state, setState] = useContext(VideoPlayerContext);
 
   function playTrack(index) {
-    // console.log("currentTrackIndex", currentTrackIndex)
-    // TODO (jeremy) add back this switch
-    // if (index === state.currentTrackIndex && state.videoElement) {
+    // TODO (jeremy) add back this switch ?
+    // if (index === state.currentTrackIndex && state.videoElement)
     //   togglePlay();
-    // } else {
     if (state.isPlaying) state.videoPlayer.pause();
     const promise = state.videoPlayer.play();
-    // if (promise !== undefined) {
-    //   promise.catch(error => {
-    //     // Auto-play was prevented
-    //     console.warn("Caught error trying to start video play:", error)
-    //   }).then(() => {
-    
-    // })
-    // }
-    
     setState(state => ({ ...state, currentTrackIndex: index, isPlaying: true }));
-    // }
   }
 
   function togglePlay() {

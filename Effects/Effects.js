@@ -31,27 +31,6 @@ export const GlitchEffect = React.memo(({ factor }) => {
 })
 
 
-export const BloomEffect = React.memo(({ camera, radius = .1, threshold = .01, strength = 0.5, factor }) => {
-    const { gl, scene, size } = useThree()
-    const composer = useRef()
-    useEffect(() => void composer.current.setSize(size.width, size.height), [size])
-    useFrame(() => { return composer.current.render() }, true)
-    return (
-
-        <effectComposer ref={composer} args={[gl]}>
-            <renderPass attachArray="passes" args={[scene, camera]} />
-            <a.unrealBloomPass
-                attachArray="passes"
-                renderToScreen
-                radius={radius}
-                threshold={threshold}
-                strength={strength}
-            // resolution={new THREE.Vector2(window.innerWidth, window.innerHeight)}//{x: size.width, y: size.height}} />
-            />
-        </effectComposer>
-    )
-});
-
 // https://github.com/mrdoob/three.js/blob/master/examples/webgl_postprocessing_advanced.html
 export const Advanced2Effect = React.memo(({ camera }) => {
     const { gl, scene, size } = useThree()
@@ -161,6 +140,24 @@ export const BloomFilmEffect = React.memo(({ }) => {
             {/* // strength, radius threshold */}
             <unrealBloomPass attachArray="passes" args={[undefined, 2.6, 0.54, .998]} />
             <filmPass attachArray="passes" args={[.33, .04, 148, false]} />
+        </effectComposer>
+    )
+});
+
+
+
+export const BloomEffect = React.memo(({ threshold = 0, strength = 1.955, radius = 0, exposure = .1 }) => {
+    const composer = useRef()
+    const { scene, gl, size, camera, clock } = useThree()
+    const [v, setV] = useState();
+    useEffect(() => void composer.current.setSize(size.width, size.height), [size])
+    useFrame(() => {
+        composer.current.render()
+    }, 2)
+    return (
+        <effectComposer ref={composer} args={[gl]}>
+            <renderPass attachArray="passes" scene={scene} camera={camera} />
+            <unrealBloomPass attachArray="passes" threshold={threshold} strength={strength} radius={radius} exposure={exposure} />
         </effectComposer>
     )
 });
